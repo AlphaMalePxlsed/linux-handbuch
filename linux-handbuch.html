@@ -1,0 +1,3286 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Linux Handbuch</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/3.4.21/vue.global.prod.min.js"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@700;800&family=DM+Sans:wght@300;400;500&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --bg: #09090f;
+        --bg2: #0e0e18;
+        --bg3: #13131f;
+        --sur: #1a1a2e;
+        --sur2: #20203a;
+        --brd: #252545;
+        --brd2: #32326a;
+        --a: #818cf8;
+        --adim: rgba(129, 140, 248, 0.12);
+        --a2: #38bdf8;
+        --a2dim: rgba(56, 189, 248, 0.1);
+        --a3: #fb7185;
+        --tx: #e2e8f0;
+        --tx2: #94a3b8;
+        --tx3: #475569;
+        --fd: "Syne", sans-serif;
+        --fm: "Space Mono", monospace;
+        --fb: "DM Sans", sans-serif;
+        --ease: cubic-bezier(0.23, 1, 0.32, 1);
+      }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      html {
+        scroll-behavior: smooth;
+      }
+      body {
+        background: var(--bg);
+        color: var(--tx);
+        font-family: var(--fb);
+        overflow-x: hidden;
+      }
+      ::-webkit-scrollbar {
+        width: 5px;
+      }
+      ::-webkit-scrollbar-track {
+        background: var(--bg);
+      }
+      ::-webkit-scrollbar-thumb {
+        background: var(--brd2);
+        border-radius: 3px;
+      }
+
+      /* TOPBAR */
+      .topbar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 200;
+        height: 52px;
+        background: rgba(9, 9, 15, 0.9);
+        backdrop-filter: blur(20px);
+        border-bottom: 1px solid var(--brd);
+        display: flex;
+        align-items: center;
+      }
+      .tlogo {
+        width: 200px;
+        padding: 0 20px;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        border-right: 1px solid var(--brd);
+        flex-shrink: 0;
+      }
+      .tlogo-icon {
+        width: 26px;
+        height: 26px;
+        border-radius: 6px;
+        background: var(--a);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: var(--fm);
+        font-size: 10px;
+        font-weight: 700;
+        color: #09090f;
+        flex-shrink: 0;
+        box-shadow: 0 0 14px rgba(129, 140, 248, 0.4);
+      }
+      .tlogo span {
+        font-family: var(--fd);
+        font-weight: 700;
+        font-size: 14px;
+      }
+      .tnav {
+        display: flex;
+        align-items: center;
+        flex: 1;
+        padding: 0 12px;
+        height: 100%;
+      }
+      .tnav button {
+        background: none;
+        border: none;
+        color: var(--tx2);
+        font-family: var(--fb);
+        font-size: 13px;
+        font-weight: 500;
+        padding: 0 14px;
+        height: 100%;
+        cursor: pointer;
+        border-bottom: 2px solid transparent;
+        margin-top: 2px;
+        transition:
+          color 0.2s,
+          border-color 0.2s;
+      }
+      .tnav button:hover {
+        color: var(--tx);
+      }
+      .tnav button.on {
+        color: var(--a);
+        border-bottom-color: var(--a);
+      }
+      .tright {
+        padding-right: 20px;
+        font-family: var(--fm);
+        font-size: 10px;
+        color: var(--tx3);
+        margin-left: auto;
+      }
+      .tright b {
+        color: var(--a);
+        font-weight: 400;
+      }
+
+      /* LAYOUT */
+      .wrap {
+        display: flex;
+        padding-top: 52px;
+        min-height: 100vh;
+      }
+      .side {
+        width: 200px;
+        flex-shrink: 0;
+        position: fixed;
+        left: 0;
+        top: 52px;
+        bottom: 0;
+        background: var(--bg2);
+        border-right: 1px solid var(--brd);
+        overflow-y: auto;
+        padding: 14px 0;
+      }
+      .side-lbl {
+        font-family: var(--fm);
+        font-size: 9px;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: var(--tx3);
+        padding: 10px 14px 3px;
+      }
+      .side-btn {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 7px 14px;
+        cursor: pointer;
+        font-size: 12.5px;
+        color: var(--tx2);
+        border-left: 2px solid transparent;
+        transition: all 0.15s var(--ease);
+        background: none;
+        border-top: none;
+        border-right: none;
+        border-bottom: none;
+        width: 100%;
+        text-align: left;
+        font-family: var(--fb);
+      }
+      .side-btn:hover {
+        color: var(--tx);
+        background: var(--bg3);
+        transform: translateX(2px);
+      }
+      .side-btn.on {
+        color: var(--a);
+        border-left-color: var(--a);
+        background: var(--adim);
+      }
+      .side-btn.on .side-dot {
+        background: var(--a);
+        box-shadow: 0 0 6px var(--a);
+      }
+      .side-btn.scroll-on {
+        color: var(--a2);
+        border-left-color: var(--a2);
+        background: var(--a2dim);
+      }
+      .side-btn.scroll-on .side-dot {
+        background: var(--a2);
+        box-shadow: 0 0 6px var(--a2);
+      }
+      .side-num {
+        margin-left: auto;
+        font-family: var(--fm);
+        font-size: 9px;
+        color: var(--tx3);
+        background: var(--bg3);
+        padding: 1px 5px;
+        border-radius: 8px;
+      }
+
+      .main {
+        margin-left: 200px;
+        flex: 1;
+        padding: 48px 56px;
+        max-width: 1080px;
+      }
+      .sec {
+        display: none;
+        animation: fadeUp 0.35s var(--ease);
+      }
+      .sec.on {
+        display: block;
+      }
+      @keyframes fadeUp {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      /* HERO */
+      .hero {
+        position: relative;
+        min-height: calc(100vh - 52px - 96px);
+        display: flex;
+        align-items: center;
+        overflow: hidden;
+      }
+      #hcanvas {
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+      }
+      .hero-in {
+        position: relative;
+        z-index: 2;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 60px;
+        align-items: center;
+        width: 100%;
+      }
+      .hero-tag {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-family: var(--fm);
+        font-size: 10px;
+        letter-spacing: 0.15em;
+        text-transform: uppercase;
+        color: var(--a);
+        margin-bottom: 24px;
+        background: var(--adim);
+        border: 1px solid rgba(129, 140, 248, 0.25);
+        padding: 5px 12px;
+        border-radius: 20px;
+      }
+      .hero-tag::before {
+        content: "";
+        display: block;
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: var(--a);
+        box-shadow: 0 0 8px var(--a);
+        animation: pulse 2s ease infinite;
+      }
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 1;
+          transform: scale(1);
+        }
+        50% {
+          opacity: 0.5;
+          transform: scale(0.8);
+        }
+      }
+      .hero-h1 {
+        font-family: var(--fd);
+        font-weight: 800;
+        font-size: clamp(44px, 5.5vw, 76px);
+        line-height: 0.95;
+        letter-spacing: -0.035em;
+        color: var(--tx);
+      }
+      .hero-hl {
+        display: block;
+        background: linear-gradient(135deg, var(--a) 0%, var(--a2) 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+      .hero-sub {
+        color: var(--tx2);
+        font-size: 0.62em;
+      }
+      .hero-p {
+        font-size: 15px;
+        color: var(--tx2);
+        line-height: 1.7;
+        margin-top: 20px;
+        max-width: 420px;
+        font-weight: 300;
+      }
+      .hero-stats {
+        display: flex;
+        gap: 0;
+        margin-top: 36px;
+        border: 1px solid var(--brd);
+        border-radius: 12px;
+        overflow: hidden;
+        background: var(--bg3);
+      }
+      .hstat {
+        flex: 1;
+        padding: 16px 20px;
+        text-align: center;
+        border-right: 1px solid var(--brd);
+        transition: background 0.2s;
+      }
+      .hstat:last-child {
+        border-right: none;
+      }
+      .hstat:hover {
+        background: var(--sur);
+      }
+      .hstat-v {
+        font-family: var(--fd);
+        font-size: 22px;
+        font-weight: 800;
+        color: var(--a);
+      }
+      .hstat-l {
+        font-family: var(--fm);
+        font-size: 9px;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--tx3);
+        margin-top: 2px;
+      }
+      .hero-btns {
+        display: flex;
+        gap: 10px;
+        margin-top: 28px;
+      }
+      .btn {
+        font-family: var(--fd);
+        font-weight: 700;
+        font-size: 12px;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        padding: 11px 22px;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.25s var(--ease);
+        border: none;
+      }
+      .btn-p {
+        background: var(--a);
+        color: #09090f;
+        box-shadow: 0 0 20px rgba(129, 140, 248, 0.3);
+      }
+      .btn-p:hover {
+        transform: translateY(-2px) scale(1.02);
+        box-shadow: 0 4px 30px rgba(129, 140, 248, 0.5);
+      }
+      .btn-o {
+        background: transparent;
+        border: 1px solid var(--brd2) !important;
+        color: var(--tx2);
+      }
+      .btn-o:hover {
+        border-color: var(--a) !important;
+        color: var(--a);
+        transform: translateY(-2px);
+      }
+
+      /* TERMINAL */
+      .hero-r {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+      }
+      .terminal {
+        background: var(--bg3);
+        border: 1px solid var(--brd);
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+        transition:
+          transform 0.3s var(--ease),
+          box-shadow 0.3s;
+      }
+      .terminal:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 30px 80px rgba(0, 0, 0, 0.5);
+      }
+      .tbar {
+        background: var(--sur);
+        padding: 10px 14px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        border-bottom: 1px solid var(--brd);
+      }
+      .td {
+        width: 9px;
+        height: 9px;
+        border-radius: 50%;
+      }
+      .td.r {
+        background: #ff5f57;
+      }
+      .td.y {
+        background: #febc2e;
+      }
+      .td.g {
+        background: #28c840;
+      }
+      .ttitle {
+        margin-left: 8px;
+        font-family: var(--fm);
+        font-size: 10px;
+        color: var(--tx3);
+      }
+      .tbody {
+        padding: 16px;
+        font-family: var(--fm);
+        font-size: 12px;
+        line-height: 1.9;
+      }
+      .tl {
+        display: flex;
+        gap: 8px;
+      }
+      .tp {
+        color: var(--a);
+        flex-shrink: 0;
+      }
+      .tc {
+        color: var(--tx);
+      }
+      .to {
+        color: var(--tx2);
+      }
+      .tc2 {
+        color: var(--a2);
+      }
+      .cursor {
+        display: inline-block;
+        width: 7px;
+        height: 13px;
+        background: var(--a);
+        animation: blink 1s steps(1) infinite;
+        vertical-align: middle;
+      }
+      @keyframes blink {
+        50% {
+          opacity: 0;
+        }
+      }
+      .badges {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+      .badge {
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        background: var(--bg3);
+        border: 1px solid var(--brd);
+        border-radius: 8px;
+        padding: 10px 14px;
+        flex: 1;
+        min-width: 120px;
+        transition: all 0.25s var(--ease);
+      }
+      .badge:hover {
+        border-color: var(--a2);
+        transform: translateY(-2px) scale(1.02);
+        background: var(--sur);
+      }
+      .badge-ico {
+        font-size: 16px;
+      }
+      .badge-tx {
+        font-size: 12px;
+        font-weight: 500;
+        color: var(--tx2);
+      }
+      .badge-tx b {
+        display: block;
+        font-size: 11px;
+        font-family: var(--fm);
+        color: var(--a2);
+        font-weight: 400;
+      }
+
+      /* PAGE HEADER */
+      .ph {
+        margin-bottom: 40px;
+        padding-bottom: 28px;
+        border-bottom: 1px solid var(--brd);
+      }
+      .ph-kick {
+        font-family: var(--fm);
+        font-size: 10px;
+        letter-spacing: 0.15em;
+        text-transform: uppercase;
+        color: var(--a);
+        margin-bottom: 10px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .ph-kick::before {
+        content: "";
+        display: block;
+        width: 18px;
+        height: 1px;
+        background: var(--a);
+      }
+      .ph-h2 {
+        font-family: var(--fd);
+        font-weight: 800;
+        font-size: clamp(30px, 3.5vw, 48px);
+        line-height: 1.05;
+        letter-spacing: -0.025em;
+      }
+      .ph-p {
+        font-size: 15px;
+        color: var(--tx2);
+        font-weight: 300;
+        margin-top: 12px;
+        line-height: 1.65;
+        max-width: 580px;
+      }
+      .callout {
+        border-left: 3px solid var(--a);
+        background: var(--adim);
+        border-radius: 0 8px 8px 0;
+        padding: 12px 16px;
+        margin: 20px 0;
+        font-size: 14px;
+        color: var(--tx2);
+        line-height: 1.7;
+      }
+      .callout b {
+        color: var(--a);
+        font-family: var(--fm);
+        font-weight: 400;
+      }
+
+      /* IPERKA */
+      .iper-wrap {
+        position: relative;
+        margin-top: 40px;
+      }
+      .iper-line {
+        position: absolute;
+        left: 29px;
+        top: 16px;
+        bottom: 16px;
+        width: 2px;
+        background: var(--brd);
+        border-radius: 2px;
+        overflow: hidden;
+      }
+      .iper-fill {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        background: linear-gradient(180deg, var(--a), var(--a2));
+        transition: height 0.6s var(--ease);
+        border-radius: 2px;
+      }
+      .iper-list {
+        display: flex;
+        flex-direction: column;
+      }
+      .iper-item {
+        display: flex;
+        gap: 24px;
+        align-items: flex-start;
+        padding: 12px 0;
+      }
+      .iper-node {
+        position: relative;
+        z-index: 2;
+        flex-shrink: 0;
+        width: 60px;
+        display: flex;
+        justify-content: center;
+        padding-top: 14px;
+      }
+      .iper-dot {
+        width: 18px;
+        height: 18px;
+        border-radius: 50%;
+        border: 2px solid var(--brd);
+        background: var(--bg);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s var(--ease);
+        font-family: var(--fm);
+        font-size: 9px;
+        font-weight: 700;
+        color: var(--tx3);
+      }
+      .iper-item.op .iper-dot {
+        border-color: var(--a);
+        background: var(--a);
+        color: #09090f;
+        box-shadow: 0 0 12px rgba(129, 140, 248, 0.5);
+      }
+      .iper-body {
+        flex: 1;
+      }
+      .iper-head {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px 16px;
+        border-radius: 10px;
+        background: var(--bg3);
+        border: 1px solid var(--brd);
+        transition: all 0.25s var(--ease);
+        cursor: pointer;
+        user-select: none;
+      }
+      .iper-item:hover .iper-head,
+      .iper-item.op .iper-head {
+        border-color: var(--a);
+        background: var(--sur);
+        transform: translateX(4px);
+        box-shadow: 0 4px 20px rgba(129, 140, 248, 0.1);
+      }
+      .iper-ltr {
+        width: 34px;
+        height: 34px;
+        border-radius: 7px;
+        background: var(--adim);
+        border: 1px solid rgba(129, 140, 248, 0.3);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: var(--fd);
+        font-size: 17px;
+        font-weight: 800;
+        color: var(--a);
+        flex-shrink: 0;
+        transition: all 0.25s;
+      }
+      .iper-item:hover .iper-ltr,
+      .iper-item.op .iper-ltr {
+        background: var(--a);
+        color: #09090f;
+      }
+      .iper-word {
+        font-family: var(--fm);
+        font-size: 10px;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--tx3);
+      }
+      .iper-title {
+        font-family: var(--fd);
+        font-size: 16px;
+        font-weight: 700;
+      }
+      .iper-arr {
+        margin-left: auto;
+        color: var(--tx3);
+        font-size: 16px;
+        transition: all 0.3s var(--ease);
+      }
+      .iper-item:hover .iper-arr {
+        color: var(--a);
+      }
+      .iper-item.op .iper-arr {
+        color: var(--a);
+        transform: rotate(180deg);
+      }
+
+      .iper-drop {
+        overflow: hidden;
+        max-height: 0;
+        transition:
+          max-height 0.45s var(--ease),
+          opacity 0.3s;
+        opacity: 0;
+      }
+      .iper-item.op .iper-drop {
+        max-height: 1400px;
+        opacity: 1;
+      }
+      .iper-panel {
+        margin: 10px 0 6px;
+        background: var(--sur);
+        border: 1px solid var(--brd);
+        border-left: 3px solid var(--a);
+        border-radius: 0 12px 12px 0;
+        overflow: hidden;
+      }
+      .iper-intro {
+        padding: 18px 20px 14px;
+        font-size: 15px;
+        color: var(--tx2);
+        line-height: 1.75;
+        border-bottom: 1px solid var(--brd);
+      }
+      .iper-subs {
+        display: flex;
+        flex-direction: column;
+      }
+      .iper-sub {
+        border-bottom: 1px solid var(--brd);
+      }
+      .iper-sub:last-child {
+        border-bottom: none;
+      }
+      .iper-sub-head {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 14px 20px;
+        cursor: pointer;
+        transition: background 0.2s;
+      }
+      .iper-sub-head:hover,
+      .iper-sub.op .iper-sub-head {
+        background: var(--sur2);
+      }
+      .iper-sub-ico {
+        width: 30px;
+        height: 30px;
+        border-radius: 6px;
+        background: var(--adim);
+        border: 1px solid rgba(129, 140, 248, 0.2);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        color: var(--a);
+      }
+      .iper-sub-ico svg {
+        width: 15px;
+        height: 15px;
+        display: block;
+      }
+      .iper-sub-title {
+        font-size: 15px;
+        font-weight: 600;
+        color: var(--tx);
+      }
+      .iper-sub-meta {
+        font-size: 12px;
+        color: var(--tx3);
+        margin-top: 1px;
+        font-family: var(--fm);
+      }
+      .iper-sub-right {
+        margin-left: auto;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .iper-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        font-family: var(--fm);
+        font-size: 11px;
+        color: var(--a2);
+        background: var(--a2dim);
+        border: 1px solid rgba(56, 189, 248, 0.25);
+        padding: 4px 10px;
+        border-radius: 6px;
+        text-decoration: none;
+        transition: all 0.2s var(--ease);
+      }
+      .iper-link:hover {
+        background: rgba(56, 189, 248, 0.2);
+        border-color: var(--a2);
+        transform: translateY(-1px);
+      }
+      .iper-sub-arr {
+        color: var(--tx3);
+        font-size: 12px;
+        transition: transform 0.3s var(--ease);
+      }
+      .iper-sub.op .iper-sub-arr {
+        transform: rotate(180deg);
+        color: var(--a);
+      }
+      .iper-sub-drop {
+        overflow: hidden;
+        max-height: 0;
+        transition:
+          max-height 0.4s var(--ease),
+          opacity 0.3s;
+        opacity: 0;
+        pointer-events: none;
+      }
+      .iper-sub.op .iper-sub-drop {
+        max-height: 800px;
+        opacity: 1;
+        pointer-events: all;
+      }
+      .iper-sub-ico svg {
+        width: 16px;
+        height: 16px;
+        display: block;
+      }
+      .iper-sub-content {
+        padding: 0 20px 18px 62px;
+      }
+      .iper-sub-text {
+        font-size: 14.5px;
+        color: var(--tx2);
+        line-height: 1.75;
+        margin-bottom: 14px;
+      }
+      .iper-img-ph {
+        width: 100%;
+        height: 160px;
+        border-radius: 8px;
+        border: 1px dashed var(--brd2);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        gap: 8px;
+        color: var(--tx3);
+        font-family: var(--fm);
+        font-size: 11px;
+        background: var(--bg3);
+      }
+      .iper-img-ph span {
+        font-size: 24px;
+      }
+      .iper-img {
+        width: 100%;
+        border-radius: 8px;
+        border: 1px solid var(--brd);
+        object-fit: cover;
+        max-height: 260px;
+        display: block;
+      }
+
+      /* LINUX INFO */
+      .info-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+        margin-top: 24px;
+      }
+      .info-card {
+        background: var(--bg3);
+        border: 1px solid var(--brd);
+        border-radius: 10px;
+        padding: 20px;
+        transition: all 0.25s var(--ease);
+      }
+      .info-card:hover {
+        border-color: var(--a);
+        transform: translateY(-3px) scale(1.01);
+        box-shadow: 0 8px 30px rgba(129, 140, 248, 0.1);
+      }
+      .info-card h3 {
+        font-family: var(--fd);
+        font-size: 15px;
+        font-weight: 700;
+        margin-bottom: 9px;
+      }
+      .info-card p {
+        font-size: 13.5px;
+        color: var(--tx2);
+        line-height: 1.7;
+      }
+      .info-full {
+        grid-column: 1/-1;
+      }
+      .sec-title {
+        font-family: var(--fd);
+        font-size: 20px;
+        font-weight: 700;
+        margin: 36px 0 14px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+      .sec-title::after {
+        content: "";
+        flex: 1;
+        height: 1px;
+        background: var(--brd);
+      }
+      .distros {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-top: 12px;
+      }
+      .distro {
+        background: var(--sur);
+        border: 1px solid var(--brd);
+        border-radius: 6px;
+        padding: 6px 12px;
+        font-family: var(--fm);
+        font-size: 11px;
+        color: var(--tx2);
+        transition: all 0.2s var(--ease);
+        cursor: default;
+      }
+      .distro:hover {
+        border-color: var(--a2);
+        color: var(--a2);
+        transform: translateY(-2px) scale(1.05);
+        background: var(--a2dim);
+      }
+      .steps {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        margin-top: 12px;
+      }
+      .step {
+        display: flex;
+        gap: 14px;
+        align-items: flex-start;
+        background: var(--sur);
+        border-radius: 8px;
+        padding: 12px 14px;
+        border-left: 2px solid var(--a2);
+        transition: all 0.2s var(--ease);
+      }
+      .step:hover {
+        transform: translateX(4px);
+        border-left-color: var(--a);
+        background: var(--sur2);
+      }
+      .step-n {
+        font-family: var(--fm);
+        font-size: 16px;
+        font-weight: 700;
+        color: var(--a2);
+        flex-shrink: 0;
+        line-height: 1.2;
+      }
+      .step h4 {
+        font-size: 13.5px;
+        font-weight: 600;
+        margin-bottom: 3px;
+      }
+      .step p {
+        font-size: 12.5px;
+        color: var(--tx2);
+        line-height: 1.6;
+      }
+
+      /* COMMANDS */
+      .cmd-bar {
+        display: flex;
+        gap: 12px;
+        align-items: center;
+        margin-bottom: 32px;
+        flex-wrap: wrap;
+        padding: 16px 20px;
+        background: var(--bg3);
+        border: 1px solid var(--brd);
+        border-radius: 12px;
+      }
+      .srch {
+        position: relative;
+        flex: 1;
+        min-width: 180px;
+        max-width: 320px;
+      }
+      .srch-ico {
+        position: absolute;
+        left: 11px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--tx3);
+        font-size: 13px;
+        pointer-events: none;
+      }
+      .srch input {
+        width: 100%;
+        background: var(--sur);
+        border: 1px solid var(--brd);
+        color: var(--tx);
+        font-family: var(--fm);
+        font-size: 12px;
+        padding: 8px 12px 8px 32px;
+        border-radius: 7px;
+        outline: none;
+        transition: all 0.2s;
+      }
+      .srch input:focus {
+        border-color: var(--a);
+        box-shadow: 0 0 0 3px var(--adim);
+      }
+      .srch input::placeholder {
+        color: var(--tx3);
+      }
+      .fbtns {
+        display: flex;
+        gap: 5px;
+        flex-wrap: wrap;
+      }
+      .fbtn {
+        background: var(--sur);
+        border: 1px solid var(--brd);
+        color: var(--tx2);
+        font-family: var(--fm);
+        font-size: 10px;
+        padding: 5px 11px;
+        border-radius: 16px;
+        cursor: pointer;
+        letter-spacing: 0.03em;
+        transition: all 0.2s var(--ease);
+      }
+      .fbtn:hover {
+        border-color: var(--a);
+        color: var(--a);
+        transform: translateY(-1px);
+      }
+      .fbtn.on {
+        background: var(--a);
+        border-color: var(--a);
+        color: #09090f;
+        font-weight: 700;
+        box-shadow: 0 2px 12px rgba(129, 140, 248, 0.4);
+      }
+      .cmd-cnt {
+        margin-left: auto;
+        font-family: var(--fm);
+        font-size: 10px;
+        color: var(--tx3);
+      }
+      .grp-hd {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin: 32px 0 14px;
+        font-family: var(--fd);
+        font-size: 18px;
+        font-weight: 700;
+      }
+      .grp-hd::after {
+        content: "";
+        flex: 1;
+        height: 1px;
+        background: var(--brd);
+      }
+      .grp-badge {
+        font-family: var(--fm);
+        font-size: 10px;
+        color: var(--a2);
+        background: var(--a2dim);
+        border: 1px solid rgba(56, 189, 248, 0.25);
+        padding: 2px 8px;
+        border-radius: 10px;
+      }
+      .cmd-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+        gap: 14px;
+      }
+      .cmd-card {
+        background: var(--bg3);
+        border: 1px solid var(--brd);
+        border-radius: 12px;
+        overflow: hidden;
+        transition: all 0.3s var(--ease);
+      }
+      .cmd-card:hover {
+        border-color: var(--a);
+        transform: translateY(-4px) scale(1.01);
+        box-shadow: 0 12px 40px rgba(129, 140, 248, 0.15);
+      }
+      .cmd-hd {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 12px 16px;
+        border-bottom: 1px solid var(--brd);
+        background: var(--sur);
+        transition: background 0.25s;
+      }
+      .cmd-card:hover .cmd-hd {
+        background: var(--sur2);
+      }
+      .cmd-name {
+        font-family: var(--fm);
+        font-size: 15px;
+        font-weight: 700;
+        color: var(--a);
+      }
+      .cmd-cat {
+        margin-left: auto;
+        font-family: var(--fm);
+        font-size: 9px;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        padding: 2px 7px;
+        border-radius: 4px;
+        background: var(--a2dim);
+        color: var(--a2);
+        border: 1px solid rgba(56, 189, 248, 0.2);
+      }
+      .cmd-bd {
+        padding: 14px 16px;
+      }
+      .cmd-desc {
+        font-size: 14.5px;
+        color: var(--tx2);
+        line-height: 1.65;
+        margin-bottom: 13px;
+      }
+      .cmd-syn {
+        background: var(--bg);
+        border: 1px solid var(--brd);
+        border-radius: 6px;
+        padding: 8px 12px;
+        font-family: var(--fm);
+        font-size: 13px;
+        color: var(--a2);
+        margin-bottom: 11px;
+      }
+      .cmd-exs {
+        display: flex;
+        flex-direction: column;
+        gap: 9px;
+      }
+      .cmd-ex {
+        display: flex;
+        flex-direction: column;
+        gap: 3px;
+      }
+      .cmd-ec {
+        font-family: var(--fm);
+        font-size: 13px;
+        color: var(--a);
+        background: var(--adim);
+        padding: 6px 10px;
+        border-radius: 4px;
+        transition: background 0.2s;
+      }
+      .cmd-card:hover .cmd-ec {
+        background: rgba(129, 140, 248, 0.18);
+      }
+      .cmd-ed {
+        font-size: 13px;
+        color: var(--tx3);
+        padding-left: 2px;
+      }
+      .cmd-flags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 5px;
+        margin-top: 11px;
+      }
+      .cmd-flag {
+        font-family: var(--fm);
+        font-size: 11px;
+        color: var(--tx2);
+        background: var(--sur2);
+        border: 1px solid var(--brd);
+        border-radius: 4px;
+        padding: 3px 7px;
+      }
+      .cmd-flag b {
+        color: var(--a3);
+        font-weight: 400;
+      }
+      .no-res {
+        grid-column: 1/-1;
+        text-align: center;
+        padding: 60px 20px;
+        font-family: var(--fm);
+        font-size: 13px;
+        color: var(--tx3);
+      }
+
+      @media (max-width: 900px) {
+        .side {
+          display: none;
+        }
+        .main {
+          margin-left: 0;
+          padding: 28px 18px;
+        }
+        .hero-in {
+          grid-template-columns: 1fr;
+        }
+        .hero-r {
+          display: none;
+        }
+        .info-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app">
+      <nav class="topbar">
+        <div class="tlogo">
+          <div class="tlogo-icon">LX</div>
+          <span>Linux Handbuch</span>
+        </div>
+        <div class="tnav">
+          <button
+            v-for="t in tabs"
+            :key="t.id"
+            :class="{on: tab===t.id}"
+            @click="tab=t.id"
+          >
+            {{t.l}}
+          </button>
+        </div>
+        <div class="tright">v<b>2025</b> &middot; IPERKA</div>
+      </nav>
+
+      <div class="wrap">
+        <aside class="side">
+          <div v-for="g in sideGroups" :key="g.l">
+            <div class="side-lbl">{{g.l}}</div>
+            <button
+              v-for="item in g.items"
+              :key="item.id"
+              class="side-btn"
+              :class="{
+            'on': tab===item.tab && (!item.f || filt===item.f),
+            'scroll-on': tab==='commands' && filt==='Alle' && !q && item.f && activeCat===item.f
+          }"
+              @click="go(item)"
+            >
+              <span class="side-dot"></span>{{item.l}}
+              <span v-if="item.n" class="side-num">{{item.n}}</span>
+            </button>
+          </div>
+        </aside>
+
+        <main class="main">
+          <!-- TITEL -->
+          <section class="sec" :class="{on: tab==='title'}">
+            <div class="hero">
+              <canvas id="hcanvas"></canvas>
+              <div class="hero-in">
+                <div>
+                  <div class="hero-tag">Technisches Handbuch 2025</div>
+                  <h1 class="hero-h1">
+                    Das<br />
+                    <span class="hero-hl">Linux</span>
+                    <span class="hero-sub">Handbuch</span>
+                  </h1>
+                  <p class="hero-p">
+                    Von der Installation bis zu hunderten Shell-Befehlen &mdash;
+                    dein vollständiges Nachschlagewerk für die Kommandozeile.
+                  </p>
+                  <div class="hero-stats">
+                    <div class="hstat">
+                      <div class="hstat-v">{{cmds.length}}+</div>
+                      <div class="hstat-l">Commands</div>
+                    </div>
+                    <div class="hstat">
+                      <div class="hstat-v">{{cats.length}}</div>
+                      <div class="hstat-l">Kategorien</div>
+                    </div>
+                    <div class="hstat">
+                      <div class="hstat-v">IPERKA</div>
+                      <div class="hstat-l">Methode</div>
+                    </div>
+                  </div>
+                  <div class="hero-btns">
+                    <button class="btn btn-p" @click="tab='commands'">
+                      Commands erkunden
+                    </button>
+                    <button class="btn btn-o" @click="tab='iperka'">
+                      Unser Vorgehen
+                    </button>
+                  </div>
+                </div>
+                <div class="hero-r">
+                  <div class="terminal">
+                    <div class="tbar">
+                      <div class="td r"></div>
+                      <div class="td y"></div>
+                      <div class="td g"></div>
+                      <span class="ttitle">bash &mdash; linux@handbuch</span>
+                    </div>
+                    <div class="tbody">
+                      <div class="tl">
+                        <span class="tp">~$</span
+                        ><span class="tc"> uname -r</span>
+                      </div>
+                      <div class="tl">
+                        <span class="to">6.8.0-45-generic</span>
+                      </div>
+                      <div class="tl">
+                        <span class="tp">~$</span
+                        ><span class="tc"> whoami</span>
+                      </div>
+                      <div class="tl"><span class="to">user</span></div>
+                      <div class="tl">
+                        <span class="tp">~$</span
+                        ><span class="tc"> ls -la | wc -l</span>
+                      </div>
+                      <div class="tl"><span class="to">47</span></div>
+                      <div class="tl">
+                        <span class="tp">~$</span
+                        ><span class="tc"> echo "Willkommen!"</span>
+                      </div>
+                      <div class="tl"><span class="tc2">Willkommen!</span></div>
+                      <div class="tl">
+                        <span class="tp">~$</span
+                        ><span class="tc"> <span class="cursor"></span></span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="badges">
+                    <div class="badge">
+                      <span class="badge-ico">&#x1F427;</span>
+                      <div class="badge-tx"><b>Linux Kernel</b>Open Source</div>
+                    </div>
+                    <div class="badge">
+                      <span class="badge-ico">&#x26A1;</span>
+                      <div class="badge-tx">
+                        <b>Shell / Bash</b>Kommandozeile
+                      </div>
+                    </div>
+                    <div class="badge">
+                      <span class="badge-ico">&#x1F4E6;</span>
+                      <div class="badge-tx">
+                        <b>apt / dnf</b>Paketverwaltung
+                      </div>
+                    </div>
+                    <div class="badge">
+                      <span class="badge-ico">&#x1F512;</span>
+                      <div class="badge-tx">
+                        <b>chmod / sudo</b>Berechtigungen
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- IPERKA -->
+          <section class="sec" :class="{on: tab==='iperka'}">
+            <div class="ph">
+              <div class="ph-kick">02 &middot; Methode</div>
+              <h2 class="ph-h2">Vorgehen nach IPERKA</h2>
+              <p class="ph-p">
+                Beschreibung unseres eigenen Vorgehens bei diesem Projekt.
+                Klappe einen Schritt auf, um Details und unsere Deliverables zu
+                sehen.
+              </p>
+            </div>
+            <div class="callout">
+              <b>IPERKA</b> = Informieren &middot; Planen &middot; Entscheiden
+              &middot; Realisieren &middot; Kontrollieren &middot; Auswerten
+            </div>
+            <div class="iper-wrap">
+              <div class="iper-line">
+                <div class="iper-fill" :style="{height: iperProg+'%'}"></div>
+              </div>
+              <div class="iper-list">
+                <div
+                  v-for="(s,i) in iperka"
+                  :key="s.letter"
+                  class="iper-item"
+                  :class="{op: iperOpen===i}"
+                >
+                  <div class="iper-node">
+                    <div class="iper-dot">{{i+1}}</div>
+                  </div>
+                  <div class="iper-body">
+                    <div class="iper-head" @click="toggleIper(i)">
+                      <div class="iper-ltr">{{s.letter}}</div>
+                      <div>
+                        <div class="iper-word">{{s.word}}</div>
+                        <div class="iper-title">{{s.title}}</div>
+                      </div>
+                      <span class="iper-arr">&#9660;</span>
+                    </div>
+                    <div class="iper-drop">
+                      <div class="iper-panel">
+                        <div class="iper-intro">{{s.intro}}</div>
+                        <div class="iper-subs">
+                          <div
+                            v-for="(sub,si) in s.subs"
+                            :key="si"
+                            class="iper-sub"
+                            :class="{op: subOpen[i+'_'+si]}"
+                          >
+                            <div
+                              class="iper-sub-head"
+                              @click.stop="toggleSub(i,si)"
+                            >
+                              <div class="iper-sub-ico" v-html="sub.ico"></div>
+                              <div>
+                                <div class="iper-sub-title">{{sub.title}}</div>
+                                <div class="iper-sub-meta">{{sub.meta}}</div>
+                              </div>
+                              <div class="iper-sub-right">
+                                <a
+                                  v-if="sub.link"
+                                  :href="sub.link"
+                                  target="_blank"
+                                  class="iper-link"
+                                  @click.stop
+                                  >&#8599; {{sub.linkLabel}}</a
+                                >
+                                <span class="iper-sub-arr">&#9660;</span>
+                              </div>
+                            </div>
+                            <div class="iper-sub-drop">
+                              <div class="iper-sub-content">
+                                <p class="iper-sub-text">{{sub.text}}</p>
+                                <img
+                                  v-if="sub.img"
+                                  :src="sub.img"
+                                  class="iper-img"
+                                />
+                                <div v-else-if="sub.ph" class="iper-img-ph">
+                                  <span>&#x1F5BC;</span>
+                                  <div>Bild wird noch hinzugeügt</div>
+                                  <div>{{sub.hint}}</div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- LINUX -->
+          <section class="sec" :class="{on: tab==='linux'}">
+            <div class="ph">
+              <div class="ph-kick">03 &middot; Grundlagen</div>
+              <h2 class="ph-h2">Was ist Linux?</h2>
+              <p class="ph-p">
+                Linux ist ein freier, quelloffener Betriebssystem-Kernel &mdash;
+                die Basis von Servern, Smartphones und Supercomputern weltweit.
+              </p>
+            </div>
+            <div class="info-grid">
+              <div class="info-card">
+                <h3>&#x1F427; Ursprung 1991</h3>
+                <p>
+                  Linus Torvalds veröffentlichte 1991 seinen Kernel. Heute
+                  treibt Linux 96% aller Webserver an.
+                </p>
+              </div>
+              <div class="info-card">
+                <h3>&#x1F513; Open Source GPL</h3>
+                <p>
+                  Der Quellcode ist frei zuänglich. Die GNU GPL sorgt dafür,
+                  dass Verbesserungen der Gemeinschaft zurückgegeben werden.
+                </p>
+              </div>
+              <div class="info-card">
+                <h3>&#x2699; Wie funktioniert es?</h3>
+                <p>
+                  Der Kernel verwaltet CPU, RAM und Geräte. Darüber liegen
+                  Shell, Libraries und Anwendungen &mdash; klar getrennte
+                  Schichten.
+                </p>
+              </div>
+              <div class="info-card">
+                <h3>&#x1F30D; Verbreitung heute</h3>
+                <p>
+                  Alle 500 schnellsten Supercomputer laufen auf Linux. Android
+                  hat ~72% Marktanteil bei Smartphones weltweit.
+                </p>
+              </div>
+            </div>
+            <div class="sec-title">Distributionen</div>
+            <div class="info-card info-full">
+              <h3>Die wichtigsten Linux-Distributionen</h3>
+              <p
+                style="margin-bottom: 12px; font-size: 13px; color: var(--tx2)"
+              >
+                Eine Distribution kombiniert Kernel, Paketmanager und Desktop zu
+                einem fertigen System.
+              </p>
+              <div class="distros">
+                <div v-for="d in distros" :key="d" class="distro">{{d}}</div>
+              </div>
+            </div>
+            <div class="sec-title">Dateisystem-Struktur</div>
+            <div class="info-card info-full">
+              <h3>Der Linux-Verzeichnisbaum</h3>
+              <div class="steps">
+                <div v-for="d in fs" :key="d.p" class="step">
+                  <div class="step-n">{{d.p}}</div>
+                  <div>
+                    <h4>{{d.name}}</h4>
+                    <p>{{d.desc}}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="sec-title">Linux installieren (Ubuntu)</div>
+            <div class="info-card info-full">
+              <h3>Schritt-für-Schritt Installation</h3>
+              <div class="steps">
+                <div v-for="s in instSteps" :key="s.n" class="step">
+                  <div class="step-n">{{s.n}}</div>
+                  <div>
+                    <h4>{{s.title}}</h4>
+                    <p>{{s.desc}}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- COMMANDS -->
+          <section class="sec" :class="{on: tab==='commands'}">
+            <div class="ph">
+              <div class="ph-kick">04 &middot; Referenz</div>
+              <h2 class="ph-h2">Linux Commands</h2>
+              <p class="ph-p">
+                Das vollständige Nachschlagewerk &mdash; durchsuchbar, nach
+                Kategorien gefiltert, mit Syntax und Beispielen.
+              </p>
+            </div>
+            <div class="cmd-bar">
+              <div class="srch">
+                <span class="srch-ico">&#x2315;</span>
+                <input
+                  v-model="q"
+                  placeholder="Command suchen (z.B. ls, grep, ssh)..."
+                />
+              </div>
+              <div class="fbtns">
+                <button
+                  v-for="c in ['Alle',...cats]"
+                  :key="c"
+                  class="fbtn"
+                  :class="{on: filt===c}"
+                  @click="filt=c"
+                >
+                  {{c}}
+                </button>
+              </div>
+              <span class="cmd-cnt">{{shown.length}} Befehle</span>
+            </div>
+
+            <template v-if="filt==='Alle' && !q">
+              <div v-for="c in cats" :key="c">
+                <div class="grp-hd" :data-cat="c">
+                  {{c}}<span class="grp-badge">{{byCat[c].length}}</span>
+                </div>
+                <div class="cmd-grid">
+                  <div v-for="cmd in byCat[c]" :key="cmd.name" class="cmd-card">
+                    <div class="cmd-hd">
+                      <span class="cmd-name">{{cmd.name}}</span
+                      ><span class="cmd-cat">{{cmd.cat}}</span>
+                    </div>
+                    <div class="cmd-bd">
+                      <p class="cmd-desc">{{cmd.desc}}</p>
+                      <div class="cmd-syn">$ {{cmd.syn}}</div>
+                      <div class="cmd-exs">
+                        <div v-for="ex in cmd.ex" :key="ex.c" class="cmd-ex">
+                          <div class="cmd-ec">$ {{ex.c}}</div>
+                          <div class="cmd-ed">{{ex.d}}</div>
+                        </div>
+                      </div>
+                      <div v-if="cmd.flags" class="cmd-flags">
+                        <div v-for="f in cmd.flags" :key="f.f" class="cmd-flag">
+                          <b>{{f.f}}</b> {{f.d}}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </template>
+            <template v-else>
+              <div class="cmd-grid">
+                <div v-if="shown.length===0" class="no-res">
+                  Kein Command gefunden für "{{q}}"
+                </div>
+                <div v-for="cmd in shown" :key="cmd.name" class="cmd-card">
+                  <div class="cmd-hd">
+                    <span class="cmd-name">{{cmd.name}}</span
+                    ><span class="cmd-cat">{{cmd.cat}}</span>
+                  </div>
+                  <div class="cmd-bd">
+                    <p class="cmd-desc">{{cmd.desc}}</p>
+                    <div class="cmd-syn">$ {{cmd.syn}}</div>
+                    <div class="cmd-exs">
+                      <div v-for="ex in cmd.ex" :key="ex.c" class="cmd-ex">
+                        <div class="cmd-ec">$ {{ex.c}}</div>
+                        <div class="cmd-ed">{{ex.d}}</div>
+                      </div>
+                    </div>
+                    <div v-if="cmd.flags" class="cmd-flags">
+                      <div v-for="f in cmd.flags" :key="f.f" class="cmd-flag">
+                        <b>{{f.f}}</b> {{f.d}}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </template>
+          </section>
+        </main>
+      </div>
+    </div>
+    <script>
+      const { createApp, ref, computed, onMounted } = Vue;
+      createApp({
+        setup() {
+          const tab = ref("title");
+          const q = ref("");
+          const filt = ref("Alle");
+          const iperOpen = ref(null);
+          const subOpen = ref({});
+
+          const tabs = [
+            { id: "title", l: "01 Titelseite" },
+            { id: "iperka", l: "02 IPERKA" },
+            { id: "linux", l: "03 Was ist Linux?" },
+            { id: "commands", l: "04 Commands" },
+          ];
+
+          function toggleIper(i) {
+            if (iperOpen.value === i) {
+              iperOpen.value = null;
+              // Close all subs of this item
+              Object.keys(subOpen.value).forEach((k) => {
+                if (k.startsWith(i + "_")) subOpen.value[k] = false;
+              });
+            } else {
+              iperOpen.value = i;
+            }
+          }
+          function toggleSub(i, si) {
+            const k = i + "_" + si;
+            subOpen.value[k] = !subOpen.value[k];
+          }
+          const iperProg = computed(() => {
+            if (iperOpen.value === null) return 0;
+            return Math.round(((iperOpen.value + 1) / 6) * 100);
+          });
+
+          const icons = {
+            book: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>',
+            target:
+              '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>',
+            calendar:
+              '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>',
+            list: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>',
+            figma:
+              '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 5.5A3.5 3.5 0 0 1 8.5 2H12v7H8.5A3.5 3.5 0 0 1 5 5.5z"/><path d="M12 2h3.5a3.5 3.5 0 1 1 0 7H12V2z"/><path d="M12 12.5a3.5 3.5 0 1 1 7 0 3.5 3.5 0 1 1-7 0z"/><path d="M5 19.5A3.5 3.5 0 0 1 8.5 16H12v3.5a3.5 3.5 0 1 1-7 0z"/><path d="M5 12.5A3.5 3.5 0 0 1 8.5 9H12v7H8.5A3.5 3.5 0 0 1 5 12.5z"/></svg>',
+            code: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>',
+            terminal:
+              '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>',
+            check:
+              '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>',
+            phone:
+              '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>',
+            bulb: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="9" y1="18" x2="15" y2="18"/><line x1="10" y1="22" x2="14" y2="22"/><path d="M15.09 14c.18-.98.65-1.74 1.41-2.5A4.65 4.65 0 0 0 18 8 6 6 0 0 0 6 8c0 1 .23 2.23 1.5 3.5A4.61 4.61 0 0 1 8.91 14"/></svg>',
+            rocket:
+              '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/></svg>',
+          };
+
+          const iperka = [
+            {
+              letter: "I",
+              word: "Informieren",
+              title: "Informationsphase",
+              intro:
+                "Wir haben uns in der Gruppe ausgetauscht, was der Auftrag umfässt. Entschieden haben wir uns eine Webseite zu erstllen, auf welcher wir unser Vorgehen sowie alle nötigen Linux Commands zeigen.",
+              subs: [
+                {
+                  ico: icons.book,
+                  title: "Erste Ideen",
+                  text: "Wir haben kurz in Stichworten notiert, was genau unser Handbuch beinhalten soll, damit wir mit der richtigen Planung weitermachen können",
+                  ph: true,
+                  img: "images/first_ideas.png",
+                  hint: "Screenshot Quellenliste hier einfügen",
+                },
+              ],
+            },
+            {
+              letter: "P",
+              word: "Planen",
+              title: "Planungsphase",
+              intro:
+                "Nachdem wir eine grobe Idee gefunden haben, geht es an den zweiten Schritt, nähmlich die Planungsphase. Um unsere Idee zu realiseren also eine Webseite zu erstellen, haben wir ein Design auf Figma entworfen wie die Webseite ungefähr strukturiert sein sollte.",
+              subs: [
+                {
+                  ico: icons.calendar,
+                  title: "Projektplan",
+                  text: "Hier unsere Planung was alles im Handbuch enthalten sein soll.",
+                  img: "images/image.png",
+                  ph: true,
+                },
+                {
+                  ico: icons.figma,
+                  title: "Design - Commands",
+                  text: "Hier ist das folgende Design welches wir auf Figma erstellt haben.",
+                  img: "images/cmds_design.png",
+                  ph: true,
+                },
+                {
+                  ico: icons.figma,
+                  title: "Design - IPERKA",
+                  text: "Hier ist das folgende Design welches wir auf Figma erstellt haben.",
+                  img: "images/planung_design.png",
+                  ph: false,
+                },
+              ],
+            },
+            {
+              letter: "E",
+              word: "Entscheiden",
+              title: "Entscheidungsphase",
+              intro:
+                "In dieser Phase, entschieden wir uns für ein endgültiges Design der Webseite, sowie was für Tools wir fürs erstellen der Seite verwenden werden.",
+              subs: [
+                {
+                  ico: icons.figma,
+                  title: "Webseite Design - Commands",
+                  text: "Dies ist das Finale Design welches wir verwendet haben. Kleine Änderungen haben wir später noch vorgenommen.",
+                  ph: true,
+                  img: "images/final_cmds.png",
+                  hint: "Figma Screenshot als PNG exportieren und hier einfügen",
+                },
+                {
+                  ico: icons.figma,
+                  title: "Webseite Design - IPERKA",
+                  text: "Dies ist das Finale Design für unsere IPERKA Planungseite welches wir verwendet haben. Kleine Änderungen haben wir später noch vorgenommen.",
+                  ph: true,
+                  img: "images/final_iperka.png",
+                  hint: "Figma Screenshot als PNG exportieren und hier einfügen",
+                },
+                {
+                  ico: icons.code,
+                  title: "Framework - Vue.js",
+                  text: "Wir entschieden uns für das Framework Vue.js, da es die Resourcen direkt im Brower herunterlädt. Es ist auch gut geignet für ein Projekt wie diese da wir ganz einfach alles in eine HTML Datei einfügen können.",
+                  ph: false,
+                },
+              ],
+            },
+            {
+              letter: "R",
+              word: "Realisieren",
+              title: "Realisierungsphase",
+              intro:
+                "Die eigentliche Umsetzung: Programmieren, Inhalte schreiben, Commands dokumentieren und Design verfeinern.",
+              subs: [
+                {
+                  ico: icons.terminal,
+                  title: "Entwicklung - Webseite",
+                  text: "Wie zuvor erwähnt haben wir die Webseite von Claude AI generieren lassen, da eine Webseite viel praktischer und flexibler ist als ein PDF Dokument. Die Hauptarbeit --> Die Commands erklären machen wir selber. Wir erstellten anhand unserer Figma Designs einen Prompt für Claude um die Webseite zu generieren.",
+                  ph: true,
+                  img: "images/claude_prompt.png",
+                  hint: "Screenshot der fertigen App",
+                },
+                {
+                  ico: icons.terminal,
+                  title: "Verbesserungen - Webseite",
+                  text: "Da die Webseite natürlich noch nich perfekt war, haben wir weiterhin mit Prompts die Webseite nach unseren Wünschen verbessert, sowie selbst noch ändern vorgenommen",
+                  ph: false,
+                },
+                {
+                  ico: icons.list,
+                  title: "IPERKA - Dokumentieren",
+                  text: "In der Gruppe haben wir in der Planungsphase einen groben Plan entworfen. Zu zweit haben wir die Planung dokumentiert auf der Webseite. Danach halfen wir beim Dokumentieren der Commands mit.",
+                  ph: false,
+                },
+                {
+                  ico: icons.list,
+                  title: "Commands - Dokumentieren",
+                  text: "Wir suchten nach einer Liste von Commands die schon in Kategorieren unterteilt waren. Insegamt haben wir nun 12 Kategoieren von Commands. Jeder schnappte sich eine andere Gruppe und dokumentierte die Commands in ein Word Dokument. Sobald jeder seinen Teil fertig hatte, schauten wir es uns gemeinsam an, ob die Erklärungen für jeden von uns verständlich sind.",
+                  ph: false,
+                },
+              ],
+            },
+            {
+              letter: "K",
+              word: "Kontrollieren",
+              title: "Kontrollphase",
+              intro:
+                "Das fertige Handbuch wurde auf Korrektheit, Vollständigkeit und Benutzerfreundlichkeit geprüft.",
+              subs: [
+                {
+                  ico: icons.check,
+                  title: "Inhaltliche Prüfung",
+                  meta: "Review - Woche 4",
+                  text: "Alle Commands auf technische Korrektheit geprüft. Syntax und Beispiele gegen offizielle Man-Pages verifiziert.",
+                  ph: false,
+                },
+                {
+                  ico: icons.phone,
+                  title: "Usability und Responsive Test",
+                  meta: "Browser-Test",
+                  text: "Handbuch in verschiedenen Browsern getestet. Suche, Filter und Dropdowns auf korrekte Funktion geprüft.",
+                  ph: true,
+                  hint: "Screenshot Browser-Test einfügen",
+                },
+              ],
+            },
+            {
+              letter: "A",
+              word: "Auswerten",
+              title: "Auswertungsphase",
+              intro:
+                "Abschliessende Reflexion: Was lief gut? Was würden wir beim nächsten Mal anders machen?",
+              subs: [
+                {
+                  ico: icons.bulb,
+                  title: "Learnings und Reflexion",
+                  meta: "Rückblick",
+                  text: "Vue.js via CDN erwies sich als ideale Wahl. Das IPERKA-Modell half uns strukturiert vorzugehen.",
+                  ph: false,
+                },
+                {
+                  ico: icons.rocket,
+                  title: "Ausblick und Erweiterungen",
+                  meta: "Zukunft",
+                  text: "Mögliche Erweiterungen: mehr Commands, Offline-Version, Mehrsprachigkeit und eine PDF-Druckversion.",
+                  ph: false,
+                },
+              ],
+            },
+          ];
+
+          const distros = [
+            "Ubuntu",
+            "Debian",
+            "Fedora",
+            "Arch Linux",
+            "Linux Mint",
+            "openSUSE",
+            "Kali Linux",
+            "Rocky Linux",
+            "Pop!_OS",
+            "Manjaro",
+            "CentOS",
+            "Alpine",
+          ];
+
+          const fs = [
+            {
+              p: "/",
+              name: "Root",
+              desc: "Wurzelverzeichnis - Ausgangspunkt aller Pfade",
+            },
+            {
+              p: "/bin",
+              name: "Binaries",
+              desc: "Grundlegende Systembefehle (ls, cp, mv, rm)",
+            },
+            {
+              p: "/etc",
+              name: "Konfiguration",
+              desc: "Alle systemweiten Konfigurationsdateien",
+            },
+            {
+              p: "/home",
+              name: "Benutzerverzeichnisse",
+              desc: "Perönliche Ordner der User",
+            },
+            {
+              p: "/var",
+              name: "Variable Daten",
+              desc: "Log-Dateien, Datenbanken, Mail-Spools",
+            },
+            {
+              p: "/tmp",
+              name: "Temporär",
+              desc: "Temporäre Dateien, beim Neustart gelöscht",
+            },
+            {
+              p: "/usr",
+              name: "User Programs",
+              desc: "Installierte Programme und Ressourcen",
+            },
+            {
+              p: "/dev",
+              name: "Geätedateien",
+              desc: "Hardware als Dateien repräsentiert",
+            },
+          ];
+
+          const instSteps = [
+            {
+              n: "01",
+              title: "ISO herunterladen",
+              desc: "Ubuntu ISO von ubuntu.com laden. LTS-Version empfohlen.",
+            },
+            {
+              n: "02",
+              title: "Bootähigen USB erstellen",
+              desc: "Mit Rufus oder Balena Etcher das ISO auf USB schreiben (min. 8 GB).",
+            },
+            {
+              n: "03",
+              title: "Von USB booten",
+              desc: "PC neustarten, BIOS aufrufen (F2/F12/DEL) und USB als erstes Boot-Medium setzen.",
+            },
+            {
+              n: "04",
+              title: "Installation starten",
+              desc: "Ubuntu installieren wählen, Sprache, Tastatur und Zeitzone konfigurieren.",
+            },
+            {
+              n: "05",
+              title: "Partitionierung",
+              desc: "Einsteiger: Gesamten Datenträger verwenden. Fortgeschritten: manuelle Partitionierung.",
+            },
+            {
+              n: "06",
+              title: "Benutzer anlegen",
+              desc: "Benutzername, Computername und sicheres Passwort festlegen.",
+            },
+            {
+              n: "07",
+              title: "Installation abwarten",
+              desc: "Dauert 10 bis 20 Minuten. Danach neustarten und USB entfernen.",
+            },
+            {
+              n: "08",
+              title: "System aktualisieren",
+              desc: "sudo apt update && sudo apt upgrade ausführen.",
+            },
+          ];
+
+          const cmds = [
+            {
+              name: "ls",
+              cat: "Navigation",
+              desc: "Listet Dateien und Verzeichnisse auf.",
+              syn: "ls [OPTIONEN] [PFAD]",
+              ex: [
+                {
+                  c: "ls",
+                  d: "Zeigt alle Dateien im aktuellen Verzeichnis an.",
+                },
+                { c: "ls -la /home", d: "Alle Dateien, ausfürlich." },
+              ],
+              flags: [
+                { f: "-l", d: "Zeigt Details der einzelnen Dateien an" },
+                { f: "-a", d: "Zeigt auch verstecke Dateien an" },
+                {
+                  f: "-h",
+                  d: "Zeigt die Dateiengrösse menschlich lesbar an",
+                },
+                {
+                  f: "-R",
+                  d: "Zeigt alle Files in umgekehrter Reihenfolge an",
+                },
+              ],
+            },
+            {
+              name: "cd",
+              cat: "Navigation",
+              desc: "Wechselt das Verzeichnis.",
+              syn: "cd [VERZEICHNIS]",
+              ex: [
+                {
+                  c: "cd /scom/one-connectivity-portal",
+                  d: "Wechselt ins Verzeichnis zu meinem Projekt bei der Arbeit",
+                },
+                { c: "cd ~ ", d: "Bringt dich zum Home Verzeichnis zurück." },
+                { c: "cd ..", d: "Ein Verzeichnis zurück" },
+              ],
+            },
+            {
+              name: "pwd",
+              cat: "Navigation",
+              desc: "Gibt den vollständigen Pfad des aktuellen Verzeichnisses aus.",
+              syn: "pwd",
+              ex: [{ c: "pwd", d: "Aktuellen Pfad anzeigen" }],
+            },
+            {
+              name: "find",
+              cat: "Navigation",
+              desc: "Sucht nach Dateien anhand von bestimmten Kriterien.",
+              syn: "find [PFAD] [KRITERIEN]",
+              ex: [
+                {
+                  c: 'find / -name "*.log"',
+                  d: "Zeigt nur Dateien an die eine endung von .log in ihrem Namen haben.",
+                },
+                { c: "find . -type d", d: "Gibt nur Verzeichnisse aus" },
+              ],
+              flags: [
+                { f: "-name", d: "Name" },
+                { f: "-type", d: "Typ" },
+                { f: "-size", d: "Grösse" },
+                { f: "-mtime", d: "Geändert" },
+              ],
+            },
+            {
+              name: "tree",
+              cat: "Navigation",
+              desc: "Gibt dir dein Verzeichnis als Baumdiagramm aus",
+              syn: "tree [OPTIONEN] [PFAD]",
+              ex: [
+                { c: "tree", d: "Baum des aktuellen Ordners" },
+                {
+                  c: "tree -L 2",
+                  d: "Nur 2 Ebenen tief, anstatt das gesamte Verzeichnis.",
+                },
+              ],
+            },
+            {
+              name: "cp",
+              cat: "Dateiverwaltung",
+              desc: "Kopiert Dateien und Verzeichnisse.",
+              syn: "cp [OPTIONEN] QUELLE ZIEL",
+              ex: [
+                { c: "cp file.txt backup.txt", d: "Datei kopieren" },
+                { c: "cp -r ordner/ /backup/", d: "Verzeichnis rekursiv" },
+              ],
+              flags: [
+                { f: "-r", d: "Rekursiv" },
+                { f: "-p", d: "Attribute" },
+                { f: "-i", d: "Interaktiv" },
+                { f: "-v", d: "Verbose" },
+              ],
+            },
+            {
+              name: "mv",
+              cat: "Dateiverwaltung",
+              desc: "Verschiebt oder benennt Dateien um.",
+              syn: "mv [OPTIONEN] QUELLE ZIEL",
+              ex: [
+                { c: "mv alt.txt neu.txt", d: "Datei umbenennen" },
+                { c: "mv *.jpg /bilder/", d: "Alle JPGs verschieben" },
+              ],
+            },
+            {
+              name: "rm",
+              cat: "Dateiverwaltung",
+              desc: "Löscht Dateien",
+              syn: "rm [OPTIONEN] DATEI",
+              ex: [
+                { c: "rm datei.txt", d: "Datei löschen" },
+                { c: "rm -rf ordner/", d: "Verzeichnis löschen" },
+              ],
+              flags: [
+                { f: "-r", d: "Rekursiv" },
+                { f: "-f", d: "Erzwingen" },
+                { f: "-i", d: "Bestätigen" },
+              ],
+            },
+            {
+              name: "mkdir",
+              cat: "Dateiverwaltung",
+              desc: "Erstellt ein neues Verzeichnis.",
+              syn: "mkdir [OPTIONEN] VERZEICHNIS",
+              ex: [
+                { c: "mkdir projekte", d: "Verzeichnis erstellen" },
+                { c: "mkdir -p a/b/c", d: "Verschachtelt erstellen" },
+              ],
+            },
+            {
+              name: "touch",
+              cat: "Dateiverwaltung",
+              desc: "Erstellt eine neue leere Datei",
+              syn: "touch DATEI",
+              ex: [
+                { c: "touch index.html", d: "Leere Datei erstellen" },
+                { c: "touch a.txt b.txt", d: "Mehrere gleichzeitig" },
+              ],
+            },
+            {
+              name: "chmod",
+              cat: "Dateiverwaltung",
+              desc: "Ändert Dateiberechtigungen und fügt Rechte hinzu.",
+              syn: "chmod [OPTIONEN] MODUS DATEI",
+              ex: [
+                { c: "chmod 755 script.sh", d: "rwxr-xr-x setzen" },
+                { c: "chmod +x run.sh", d: "Ausführbar machen" },
+              ],
+            },
+            {
+              name: "chown",
+              cat: "Dateiverwaltung",
+              desc: "Ändert Besitzer und Gruppe einer Datei.",
+              syn: "chown [USER][:GRUPPE] DATEI",
+              ex: [
+                { c: "chown user:group file", d: "Besitzer ändern" },
+                { c: "chown -R www-data /var/www", d: "Rekursiv Webserver" },
+              ],
+            },
+            {
+              name: "ln",
+              cat: "Dateiverwaltung",
+              desc: "Erstellt eine Verknüpfung zu einer anderen Datei",
+              syn: "ln [OPTIONEN] ZIEL LINKNAME",
+              ex: [{ c: "ln -s /pfad/datei link", d: "Symlink erstellen" }],
+              flags: [{ f: "-s", d: "Symlink" }],
+            },
+            {
+              name: "grep",
+
+              cat: "Text",
+
+              desc: "Sucht in Dateien nach bestimmten Mustern, Wörtern oder Textabschnitten. grep ist quasi die eingebaute Suchfunktion von Linux. Mit den unten aufgelisteten Optionen lässt sich die Suche noch genauer anpassen.",
+
+              syn: "grep [OPTIONEN] MUSTER [DATEI]",
+
+              ex: [
+                { c: 'grep "error" logfile', d: "Nach einem error suchen." },
+
+                {
+                  c: 'grep -rn "TODO" ./src',
+
+                  d: "Rekursiv (dursucht ganz ./src) mit Zeilennr (zeigt die Zeilennummer an).",
+                },
+              ],
+
+              flags: [
+                { f: "-i", d: "Gross/Klein" },
+
+                { f: "-r", d: "Rekursiv" },
+
+                { f: "-n", d: "Zeilennr." },
+
+                { f: "-v", d: "Invertiert" },
+
+                { f: "-c", d: "Zählen" },
+              ],
+            },
+            {
+              name: "sed",
+
+              cat: "Text",
+
+              desc: "Sed ist der Stream-Editor in Linux. Er wird hauptsächlich verwendet, um Text in Dateien zu suchen und zu ersetzen, ohne die Datei zu öffnen.",
+
+              syn: "sed [OPTIONEN] SKRIPT [DATEI]",
+
+              ex: [
+                {
+                  c: "sed 's/alt/neu/g' datei.txt",
+
+                  d: "Ersetzen in der Datei. 'Nur im Terminal!' (s= ersetzen, g= global)",
+                },
+
+                {
+                  c: "sed -i 's/foo/bar/g' *.txt",
+
+                  d: "Ersetzt in allen .txt dateien. (-i= an Ort und Stelle verändern)",
+                },
+              ],
+            },
+            {
+              name: "awk",
+
+              cat: "Text",
+
+              desc: "Awk verarbeitet Text in Spalten. Es teilt jede Zeile automatisch auf und gibt gezielt einzelne Spalten oder Tabellen-Abschnitte aus.",
+
+              syn: "awk PROGRAMM [DATEI]",
+
+              ex: [
+                {
+                  c: "awk '{print $1}' datei",
+
+                  d: "Die erste Spalte ausgeben.",
+                },
+
+                {
+                  c: "awk -F: '{print $1}' /etc/passwd",
+
+                  d: "Gibt die erste Spalte aus, nutz aber Doppelpunkt als Trennzeichen.",
+                },
+              ],
+            },
+            {
+              name: "cut",
+
+              cat: "Text",
+
+              desc: "Cut schneidet bestimmte Teile (wie Spalten, Zeichen oder Felder) aus den Zeilen einer Datei heraus.",
+
+              syn: "cut [OPTIONEN] [DATEI]",
+
+              ex: [
+                {
+                  c: "cut -d: -f1 /etc/passwd",
+
+                  d: "Schneidet das erste Feld aus, alles was sich vor dem Doppelpunkt befindet. Doppelpunkt ist der Trenner.",
+                },
+              ],
+
+              flags: [
+                { f: "-d", d: "Trenner" },
+
+                { f: "-f", d: "Felder" },
+
+                { f: "-c", d: "Zeichen" },
+              ],
+            },
+            {
+              name: "sort",
+
+              cat: "Text",
+
+              desc: "Sortiert Zeilen einer Textdatei.",
+
+              syn: "sort [OPTIONEN] [DATEI]",
+
+              ex: [
+                { c: "sort namen.txt", d: "Alphabetisch sortieren" },
+
+                { c: "sort -n zahlen.txt", d: "Numerisch sortieren" },
+              ],
+
+              flags: [
+                { f: "-n", d: "Numerisch" },
+
+                { f: "-r", d: "Umgekehrt" },
+
+                { f: "-u", d: "Einmalig" },
+              ],
+            },
+            {
+              name: "wc",
+
+              cat: "Text",
+
+              desc: "Zählt Zeilen, Wörter und Zeichen.",
+
+              syn: "wc [OPTIONEN] [DATEI]",
+
+              ex: [
+                { c: "wc -l datei.txt", d: "Anzahl Zeilen in der Datei" },
+
+                { c: "wc -w text.txt", d: "Anzahl Wörter in der Datei" },
+              ],
+            },
+            {
+              name: "head",
+
+              cat: "Text",
+
+              desc: "Gibt die ersten Zeilen aus (Standard: 10).",
+
+              syn: "head [OPTIONEN] [DATEI]",
+
+              ex: [{ c: "head -20 log.txt", d: "Zeigt die ersten 20 Zeilen." }],
+
+              flags: [
+                { f: "-n", d: "Zeilen" },
+
+                { f: "-c", d: "Bytes" },
+              ],
+            },
+            {
+              name: "tail",
+
+              cat: "Text",
+
+              desc: "Gibt die letzten Zeilen aus, ideal für Log-Monitoring.",
+
+              syn: "tail [OPTIONEN] [DATEI]",
+
+              ex: [
+                { c: "tail -f /var/log/syslog", d: "Live-Log verfolgen" },
+
+                {
+                  c: "tail -n 50 error.log",
+
+                  d: "Zeigt die letzte 50 Zeilen. (von unten)",
+                },
+              ],
+            },
+            {
+              name: "diff",
+
+              cat: "Text",
+
+              desc: "Vergleicht zwei Dateien zeilenweise.",
+
+              syn: "diff [OPTIONEN] DATEI1 DATEI2",
+
+              ex: [
+                {
+                  c: "diff alt.txt neu.txt",
+                  d: "Dateien vergleichen Zeile für Zeile.",
+                },
+
+                {
+                  c: "diff -u a.txt b.txt",
+                  d: "Unified-Format: abriete wie Git. Gibt + und - für Veränderungen.",
+                },
+              ],
+            },
+            {
+              name: "less",
+
+              cat: "Text",
+
+              desc: "Pager zum Lesen grosser Dateien. q beendet. Es spart Arbeitsspeicher. ",
+
+              syn: "less [DATEI]",
+
+              ex: [{ c: "less /var/log/syslog", d: "Logdatei blättern" }],
+            },
+
+            {
+              name: "top",
+              cat: "System",
+              desc: "Zeigt Systeminformationen an (Uptime, RAM-Verbrauch usw.).",
+              syn: "top [OPTIONEN]",
+              ex: [
+                { c: "top", d: "Prozess-Übersicht starten" },
+                { c: "top -u luca", d: "Nur Prozesse von luca anzeigen" },
+              ],
+            },
+            {
+              name: "htop",
+              cat: "System",
+              desc: "Farbige, erweiterte Version von top.",
+              syn: "htop",
+              ex: [{ c: "htop", d: "Farbiger Prozess-Monitor" }],
+            },
+            {
+              name: "ps",
+              cat: "System",
+              desc: "Zeigt laufende Prozesse an.",
+              syn: "ps [OPTIONEN]",
+              ex: [
+                { c: "ps aux", d: "Alle Prozesse mit Details" },
+                {
+                  c: "ps -ef | grep firefox",
+                  d: "Spezifischen Prozess finden",
+                },
+              ],
+            },
+            {
+              name: "kill",
+              cat: "System",
+              desc: "Sendet Signal an einen Prozess, das das Programm sich schliessen soll.",
+              syn: "kill [SIGNAL] PID",
+              ex: [
+                { c: "kill 1234", d: "Prozess 1234 beenden" },
+                { c: "kill -9 1234", d: "Prozess sofort killen" },
+              ],
+            },
+            {
+              name: "killall",
+              cat: "System",
+              desc: "Beendet alle Prozesse mit bestimmtem Namen.",
+              syn: "killall NAME",
+              ex: [
+                { c: "killall firefox", d: "Alle Firefox-Prozesse beenden" },
+              ],
+            },
+            {
+              name: "df",
+              cat: "System",
+              desc: "Zeigt Festplatten-Speichernutzung.",
+              syn: "df [OPTIONEN]",
+              ex: [
+                { c: "df -h", d: "Menschenlesbar GB/MB" },
+                { c: "df -h /home", d: "Nur /home anzeigen" },
+              ],
+            },
+            {
+              name: "du",
+              cat: "System",
+              desc: "Zeigt Speicherverbrauch von Dateien und Ordnern an. Du steht für Disk Usage",
+              syn: "du [OPTIONEN] [PFAD]",
+              ex: [
+                { c: "du -sh *", d: "Grösser aller Unterordner" },
+                { c: "du -h --max-depth=1", d: "Eine Ebene tief" },
+              ],
+            },
+            {
+              name: "free",
+              cat: "System",
+              desc: "Zeigt RAM und Swap-Nutzung. Ersichtlich ist: Wie viel RAM verwendet wird, frei st und insgesamt Vorhanden ist.",
+              syn: "free [OPTIONEN]",
+              ex: [{ c: "free -h", d: "RAM menschenlesbar anzeigen" }],
+            },
+            {
+              name: "uname",
+              cat: "System",
+              desc: "Gibt Systeminformationen an. In diesem Fall einfach nur: Linux",
+              syn: "uname [OPTIONEN]",
+              ex: [
+                { c: "uname -a", d: "Alle Systeminformationen" },
+                { c: "uname -r", d: "Kernel-Version" },
+              ],
+            },
+            {
+              name: "uptime",
+              cat: "System",
+              desc: "Zeigt Systemlaufzeit und CPU-Last.",
+              syn: "uptime",
+              ex: [{ c: "uptime", d: "Laufzeit und Load average" }],
+            },
+            {
+              name: "whoami",
+              cat: "System",
+              desc: "Gibt den aktuellen Benutzernamen aus.",
+              syn: "whoami",
+              ex: [{ c: "whoami", d: "Aktuellen User anzeigen" }],
+            },
+            {
+              name: "sudo",
+              cat: "System",
+              desc: "Führt Befehle mit Adminrechten aus. Dies muss für manche befehle Verwendet werden",
+              syn: "sudo BEFEHL",
+              ex: [
+                { c: "sudo apt update", d: "Pakete als root aktualisieren" },
+                { c: "sudo -i", d: "Root-Shell öffnen" },
+              ],
+            },
+            {
+              name: "reboot",
+              cat: "System",
+              desc: "Startet das System neu.",
+              syn: "reboot",
+              ex: [{ c: "sudo reboot", d: "System neustarten" }],
+            },
+            {
+              name: "shutdown",
+              cat: "System",
+              desc: "Fährt das System herunter oder plant Neustart.",
+              syn: "shutdown [OPTIONEN] [ZEIT]",
+              ex: [
+                { c: "sudo shutdown -h now", d: "Sofort herunterfahren" },
+                { c: "sudo shutdown -r +5", d: "In 5 Minuten neustarten" },
+              ],
+            },
+            {
+              name: "dmesg",
+              cat: "System",
+              desc: "Steht für display messages. Es gibt Kernel-Ringpuffer (Boot-Log) aus.",
+              syn: "dmesg [OPTIONEN]",
+              ex: [
+                { c: "dmesg | tail -20", d: "Letzte 20 Kernel-Meldungen" },
+                { c: "dmesg -T", d: "Mit Zeitstempeln" },
+              ],
+            },
+            {
+              name: "lsof",
+              cat: "System",
+              desc: "lsoft steht für List Open Files. Es listet alle aktuell offene Dateien und Prozesse auf.",
+              syn: "lsof [OPTIONEN]",
+              ex: [
+                { c: "lsof -i :80", d: "Wer nutzt Port 80?" },
+                { c: "lsof -u user", d: "Offene Dateien eines Users" },
+              ],
+            },
+            {
+              name: "ping",
+              cat: "Netzwerk",
+              desc: "Testet Netzwerkverbindung und ob andere Computer erreichbar sind.",
+              syn: "ping [OPTIONEN] HOST",
+              ex: [
+                { c: "ping google.com", d: "Host erreichbar?" },
+                { c: "ping -c 4 8.8.8.8", d: "Genau 4 Pakete senden." },
+              ],
+            },
+            {
+              name: "curl",
+              cat: "Netzwerk",
+              desc: "Wird benutzt um Daten von Websiten zu holen und im Terminal anzuzeigen.",
+              syn: "curl [OPTIONEN] URL",
+              ex: [
+                { c: "curl https://api.example.com", d: "GET-Request senden" },
+                {
+                  c: "curl -O https://example.com/f.zip",
+                  d: "Datei herunterladen",
+                },
+              ],
+              flags: [
+                { f: "-O", d: "Speichern" },
+                { f: "-L", d: "Redirect folgen" },
+                { f: "-H", d: "Header setzen" },
+                { f: "-d", d: "POST-Daten" },
+                { f: "-s", d: "Silent" },
+              ],
+            },
+            {
+              name: "wget",
+              cat: "Netzwerk",
+              desc: "Lädt Dateien aus dem Web herunter.",
+              syn: "wget [OPTIONEN] URL",
+              ex: [
+                { c: "wget https://example.com/file.iso", d: "Datei laden" },
+                { c: "wget -r -l2 https://example.com", d: "Rekursiv laden" },
+              ],
+            },
+            {
+              name: "ssh",
+              cat: "Netzwerk",
+              desc: "Mit SSH kann man sich sicher von einem anderen Computer aus einloggen und diesen fernsteuern.",
+              syn: "ssh [OPTIONEN] [USER@]HOST",
+              ex: [
+                { c: "ssh user@192.168.1.10", d: "Remote-Login" },
+                { c: "ssh -p 2222 user@host", d: "Anderer Port" },
+                { c: "ssh -i ~/.ssh/key user@host", d: "Mit SSH-Key" },
+              ],
+            },
+            {
+              name: "scp",
+              cat: "Netzwerk",
+              desc: "Kopiert Dateien und verschlüsselt diese Dateien per SSH.",
+              syn: "scp [OPTIONEN] QUELLE ZIEL",
+              ex: [
+                {
+                  c: "scp file.txt user@host:/tmp/",
+                  d: "Datei auf Server kopieren.",
+                },
+                {
+                  c: "scp -r ordner/ user@host:~/",
+                  d: "Verzeichnis übertragen.",
+                },
+              ],
+            },
+            {
+              name: "rsync",
+              cat: "Netzwerk",
+              desc: "Ein einfaches und effizientes Werkzeug zum Synchronisieren von Dateien zwischen zwei Orten. Dazu wird es auch oft genutzt um Backups zu sichern.",
+              syn: "rsync [OPTIONEN] QUELLE ZIEL",
+              flags: [
+                { f: "-a", d: "Archiv" },
+                { f: "-v", d: "Verbose" },
+                { f: "-z", d: "Komprimiert" },
+                { f: "--delete", d: "Gelöschte entfernen" },
+              ],
+            },
+            {
+              name: "ip",
+              cat: "Netzwerk",
+              desc: "Zeigt dir die IP-Adressen und die Routing Tabellen an.",
+              syn: "ip [OBJEKT] [BEFEHL]",
+              ex: [
+                { c: "ip addr show", d: "IP-Adressen anzeigen" },
+                { c: "ip route show", d: "Routing Tabelle" },
+              ],
+            },
+            {
+              name: "ss",
+              cat: "Netzwerk",
+              desc: "Untersucht bestehende Netzwerkverbindungen und offene Ports.",
+              syn: "ss [OPTIONEN]",
+              ex: [
+                { c: "ss -tuln", d: "Lauschende TCP/UDP-Ports." },
+                { c: "ss -tp", d: "TCP mit Prozessen." },
+              ],
+            },
+            {
+              name: "nmap",
+              cat: "Netzwerk",
+              desc: "Netzwerk-Scanner für Computer, wird auch oft genutzt für Sicherheitsscan.",
+              syn: "nmap [OPTIONEN] ZIEL",
+              ex: [
+                { c: "nmap 192.168.1.0/24", d: "Alle Hosts im Subnetz." },
+                { c: "nmap -sV localhost", d: "Dienste erkennen." },
+              ],
+            },
+            {
+              name: "dig",
+              cat: "Netzwerk",
+              desc: "Zeigt dir DNS abfragen und die DNS-Records einer Domain an.",
+              syn: "dig [OPTIONEN] DOMAIN",
+              ex: [
+                { c: "dig google.com", d: "DNS-Records abfragen." },
+                { c: "dig MX gmail.com", d: "Mail-Exchange-Records." },
+              ],
+            },
+            {
+              name: "ufw",
+              cat: "Netzwerk",
+              desc: "Ein einfaches Tool zum Verwalten deiner Firewall.",
+              syn: "ufw [BEFEHL]",
+              ex: [
+                { c: "sudo ufw enable", d: "Firewall aktivieren" },
+                { c: "sudo ufw allow 22/tcp", d: "SSH erlauben" },
+                { c: "sudo ufw status", d: "Status anzeigen" },
+              ],
+            },
+            {
+              name: "apt",
+              cat: "Pakete",
+              desc: "Ist ein tool um Pakete zu installieren, zu aktualisieren und zu entfernen.",
+              ex: [
+                { c: "sudo apt update", d: "Paketliste aktualisieren" },
+                { c: "sudo apt install vim", d: "Paket installieren" },
+                { c: "sudo apt upgrade", d: "Alles aktualisieren" },
+              ],
+            },
+            {
+              name: "apt-get",
+              cat: "Pakete",
+              desc: "Funktioniert gleich wie APT, wird jedoch vorallem für automatische skripte verwendet.",
+              syn: "apt-get [BEFEHL] [PAKET]",
+              ex: [
+                { c: "sudo apt-get install curl", d: "Paket installieren" },
+                {
+                  c: "sudo apt-get autoremove",
+                  d: "Verwaiste Pakete entfernen",
+                },
+              ],
+            },
+            {
+              name: "dpkg",
+              cat: "Pakete",
+              desc: "dpkg ist ein Toll zum verwalten von .deb datein.",
+              syn: "dpkg [OPTIONEN] PAKET",
+              ex: [
+                { c: "dpkg -i paket.deb", d: ".deb-Datei installieren" },
+                { c: "dpkg -l | grep vim", d: "Paket suchen" },
+              ],
+            },
+            {
+              name: "snap",
+              cat: "Pakete",
+              desc: "Ein Paketmanager, die Programme isoliert und in container laufen.",
+              syn: "snap [BEFEHL] [PAKET]",
+              ex: [
+                { c: "snap install code --classic", d: "VS Code installieren" },
+                { c: "snap list", d: "Installierte Snaps anzeigen" },
+              ],
+            },
+            {
+              name: "dnf",
+              cat: "Pakete",
+              desc: "Paketmanager fuer Fedora und RHEL. (Linux Distributionen)",
+              syn: "dnf [BEFEHL] [PAKET]",
+              ex: [
+                { c: "sudo dnf install nginx", d: "Nginx installieren" },
+                { c: "sudo dnf update", d: "System aktualisieren" },
+              ],
+            },
+            {
+              name: "pacman",
+              cat: "Pakete",
+              desc: "Paketmanager für Arch Linux das auf Manjaro basiert.",
+              syn: "pacman [OPTIONEN] [PAKET]",
+              ex: [
+                { c: "sudo pacman -Syu", d: "System aktualisieren" },
+                { c: "sudo pacman -S vim", d: "Paket installieren" },
+              ],
+            },
+            {
+              name: "pip",
+              cat: "Pakete",
+              desc: "Ein Paketmanager der vorallem für Python verwendet wird.",
+              syn: "pip [BEFEHL] [PAKET]",
+              ex: [
+                { c: "pip install requests", d: "Python-Paket installieren" },
+                { c: "pip list", d: "Installierte Pakete auflisten" },
+              ],
+            },
+            {
+              name: "npm",
+              cat: "Pakete",
+              desc: "Ein Paketmanager der vorallem für Node.js verwendet wird.",
+              syn: "npm [BEFEHL] [PAKET]",
+              ex: [
+                { c: "npm install vue", d: "Vue.js installieren" },
+                { c: "npm install -g nodemon", d: "Global installieren" },
+              ],
+            },
+            {
+              name: "tar",
+              cat: "Archiv",
+              desc: "Erstellt eine Tar Datei, Packt mehrer Dateien in eine Tar Datei.",
+              syn: "tar [OPTIONEN] DATEI",
+              ex: [
+                {
+                  c: "tar -czf archiv.tar.gz ordner/",
+                  d: "Komprimiertes Archiv erstellen",
+                },
+                { c: "tar -xzf archiv.tar.gz", d: "Archiv entpacken" },
+                { c: "tar -tzf archiv.tar.gz", d: "Inhalt anzeigen" },
+              ],
+            },
+            {
+              name: "zip",
+              cat: "Archiv",
+              desc: "Komprimiert Dateien im ZIP-Format.",
+              syn: "zip [OPTIONEN] ARCHIV DATEIEN",
+              ex: [
+                { c: "zip archiv.zip *.txt", d: "Alle .txt zippen" },
+                { c: "zip -r backup.zip ordner/", d: "Verzeichnis zippen" },
+              ],
+            },
+            {
+              name: "unzip",
+              cat: "Archiv",
+              desc: "Entpackt ZIP-Archive.",
+              syn: "unzip [OPTIONEN] ARCHIV",
+              ex: [
+                { c: "unzip archiv.zip", d: "ZIP entpacken" },
+                { c: "unzip -l archiv.zip", d: "Inhalt anzeigen" },
+              ],
+            },
+            {
+              name: "gzip",
+              cat: "Archiv",
+              desc: "Komprimiert eine einzelene Datei so weit wie mögmlich mit 'DEFLATE'.",
+              syn: "gzip [OPTIONEN] DATEI",
+              ex: [
+                { c: "gzip hausaufgaben.txt", d: "Datei komprimieren zu .gz" },
+                { c: "gzip -d hausaufgaben.txt.gz", d: "Dekomprimieren" },
+              ],
+            },
+            {
+              name: "systemctl",
+
+              cat: "Dienste",
+
+              desc: "Dies ist ein system Tool zum verwenden von Programmen. Damit kann man Programme starten, stoppen, neustarten und überprüfen ob sie fehlerfrei laufen. Zudem kann man auch einstellen ob ein Dienst sich automatisch hochfahren soll beim starten.",
+
+              syn: "systemctl [BEFEHL] [DIENST]",
+
+              ex: [
+                { c: "sudo systemctl start nginx", d: "Nginx starten" },
+
+                {
+                  c: "sudo systemctl enable ssh",
+
+                  d: "SSH beim Boot aktivieren",
+                },
+
+                { c: "systemctl status nginx", d: "Status prüfen" },
+              ],
+
+              flags: [
+                { f: "start", d: "Starten" },
+
+                { f: "stop", d: "Stoppen" },
+
+                { f: "restart", d: "Neustarten" },
+
+                { f: "enable", d: "Autostart" },
+
+                { f: "status", d: "Status" },
+              ],
+            },
+            {
+              name: "journalctl",
+
+              cat: "Dienste",
+
+              desc: "journalctl, wird verwendet um die Logs von Diensten zu sehen. Mit journalctl -f, kannst du die Logs live verfolgen. Mit journalctl -u nginx kann man in diesem Fall die Logs von Nginx sehen.",
+
+              syn: "journalctl [OPTIONEN]",
+
+              ex: [
+                { c: "journalctl -u nginx", d: "Nginx-Logs anzeigen" },
+
+                { c: "journalctl -f", d: "Live-Logs verfolgen" },
+              ],
+            },
+            {
+              name: "service",
+
+              cat: "Dienste",
+
+              desc: "Service ist im Prinzip das service Tool von systemctl. service wird heutzutage kaum noch verwendet, da systemctl die bessere Alternative ist und es die ältere Version ist.",
+
+              syn: "service DIENST BEFEHL",
+
+              ex: [
+                { c: "sudo service apache2 start", d: "Apache starten" },
+
+                { c: "sudo service nginx status", d: "Status anzeigen" },
+              ],
+            },
+            {
+              name: "useradd",
+              cat: "Benutzer",
+              desc: "Wird verwendet um einen neuen Benutzer anzulegen.",
+              syn: "useradd [OPTIONEN] BENUTZER",
+              ex: [
+                {
+                  c: "sudo useradd -m Luca",
+                  d: "-m ist wichtig, damit gleich ein Ordner angelegt wird.",
+                },
+              ],
+            },
+            {
+              name: "usermod",
+              cat: "Benutzer",
+              desc: "Ein Benutzer kann damit Modifiziert werden.",
+              syn: "usermod [OPTIONEN] BENUTZER",
+              ex: [
+                {
+                  c: "sudo usermod -aG docker Luca",
+                  d: "appendGroup docker zu Luca",
+                },
+              ],
+            },
+            {
+              name: "passwd",
+              cat: "Benutzer",
+              desc: "Passwort eines Benutzers ändern.",
+              syn: "passwd [BENUTZER]",
+              ex: [
+                { c: "passwd", d: "Das eigene Passwort ändern" },
+                { c: "sudo passwd Luka", d: "Passwort von Luka ändern" },
+              ],
+            },
+            {
+              name: "who",
+              cat: "Benutzer",
+              desc: "Zeigt alle eingeloggten Benutzer an.",
+              syn: "who",
+              ex: [
+                { c: "who", d: "Eingeloggte User anzeigen" },
+                {
+                  c: "who -b",
+                  d: "Zeigt an wann das System das letzte mal gebooted wurde",
+                },
+              ],
+            },
+            {
+              name: "last",
+              cat: "Benutzer",
+              desc: "Zeigt letzte Login-Sitzungen.",
+              syn: "last [OPTIONEN] [BENUTZER]",
+              ex: [
+                { c: "last", d: "Alle letzten Logins" },
+                { c: "last Alessandro", d: "Login-Verlauf von Alessandro" },
+              ],
+            },
+            {
+              name: "echo",
+
+              cat: "Shell",
+
+              desc: "Gibt Text oder Variablenwerte auf die Ausgabe aus.",
+
+              syn: "echo [TEXT/VARIABLE]",
+
+              ex: [
+                {
+                  c: 'echo "Hallo Welt"',
+                  d: "Gibt dir denn Text Hallo Welt als ausgabe",
+                },
+
+                { c: "echo $HOME", d: "Gibt die Variabel aus." },
+              ],
+            },
+            {
+              name: "export",
+
+              cat: "Shell",
+
+              desc: "Macht Variablen Global verfügbar.",
+
+              syn: "export VARIABLE=WERT",
+
+              ex: [
+                {
+                  c: "export PATH=$PATH:/opt/bin",
+
+                  d: "PATH erweitern, mit dem neuem Verzeichnis.",
+                },
+
+                {
+                  c: "export EDITOR=vim",
+
+                  d: "Standard-Editor setzen",
+                },
+              ],
+            },
+            {
+              name: "source",
+
+              cat: "Shell",
+
+              desc: "Führt Datei in der aktuellen Shell aus.",
+
+              syn: "source DATEI",
+
+              ex: [
+                {
+                  c: "source ~/.bashrc",
+
+                  d: "Bash-Konfiguration neu laden, anstatt Terminal schliessen und öffnen",
+                },
+              ],
+            },
+            {
+              name: "alias",
+
+              cat: "Shell",
+
+              desc: "Erstellt Abkürzungen für Befehle. Eine art Variabel",
+
+              syn: "alias NAME=BEFEHL",
+
+              ex: [
+                { c: "alias ll='ls -la'", d: "Kurzbefehl für ls -la" },
+
+                {
+                  c: "alias ..='cd ..'",
+                  d: "Kurzbefehl für Zurück navigieren",
+                },
+              ],
+            },
+            {
+              name: "history",
+
+              cat: "Shell",
+
+              desc: "Zeigt eine nummerierte Befehlshistorie der Shell-Sitzung.",
+
+              syn: "history [N]",
+
+              ex: [
+                { c: "history", d: "Alle bisherigen Befehle" },
+
+                { c: "history | grep ssh", d: "SSH in History suchen" },
+              ],
+            },
+            {
+              name: "which",
+
+              cat: "Shell",
+
+              desc: "Zeigt den vollständigen Pfad eines Befehls, wo es gespeichert war.",
+
+              syn: "which BEFEHL",
+
+              ex: [
+                { c: "which python3", d: "Wo liegt Python?" },
+
+                {
+                  c: "which -a git",
+                  d: "Gibt alle Verzeichnisse aus, in welchen git vorkommt.",
+                },
+              ],
+            },
+            {
+              name: "man",
+
+              cat: "Shell",
+
+              desc: "Zeigt die Manual-Seite eines Befehls. q beendet.",
+
+              syn: "man BEFEHL",
+
+              ex: [
+                { c: "man ls", d: "ganzes Handbuch zu ls mit Optionen" },
+
+                { c: "man 5 crontab", d: "Abschnitt 5 von crontab zeigen." },
+              ],
+            },
+            {
+              name: "xargs",
+
+              cat: "Shell",
+
+              desc: "Wandelt Text-Ausgaben (eine Liste von Dateien oder IDs) in Argumente für den nächsten Befehl um.",
+
+              syn: "xargs [OPTIONEN] [BEFEHL]",
+
+              ex: [
+                {
+                  c: 'find . -name "*.tmp" | xargs rm',
+
+                  d: "Alle .tmp-Dateien löschen, anstatt für jede Datei einzeln",
+                },
+              ],
+            },
+            {
+              name: "tee",
+
+              cat: "Shell",
+
+              desc: "Schreibt Text-Ausgaben gleichzeitig auf den Bildschirm und in eine Datei.",
+
+              syn: "tee [OPTIONEN] DATEI",
+
+              ex: [
+                {
+                  c: "ls | tee ausgabe.txt",
+
+                  d: "Ausgabe speichern und anzeigen",
+                },
+              ],
+            },
+            {
+              name: "crontab",
+              cat: "Jobs",
+              desc: "Mit crontab können zeitgesteuerte Aufgaben verwaltet werden. crontab steht für --> Crontable",
+              syn: "crontab [OPTIONEN]",
+              ex: [
+                {
+                  c: "crontab -e",
+                  d: "Cronjobs bearbeiten --> Beispiel: 0 0 * * 1 /home/luca/linux-handbuch.js.",
+                },
+                { c: "crontab -l", d: "Cronjobs anzeigen" },
+              ],
+            },
+            {
+              name: "nohup",
+              cat: "Jobs",
+              desc: "Steht für 'No Hang Up' auch wenn der Terminal oder Laptop geschlossen wird, läuft der Server weiter.",
+              syn: "nohup BEFEHL &",
+              ex: [
+                {
+                  c: "nohup ./linux-handbuch.js &",
+                  d: "Der Server vom Linux Handbuch läuft weiter.",
+                },
+              ],
+            },
+            {
+              name: "bg",
+              cat: "Jobs",
+              desc: "Gestoppten Job im Hintergrund fortsetzen, so dass der Terminal weiterhin benutzt werden kann.",
+              syn: "bg [JOB]",
+              ex: [{ c: "bg %1", d: "Führt Job 1 im Hintergrund weiter aus." }],
+            },
+            {
+              name: "fg",
+              cat: "Jobs",
+              desc: "Einen Job im Hintergrund in den Vordergrund holen.",
+              syn: "fg [JOB]",
+              ex: [{ c: "fg %1", d: "Holt Job 1 in den Vordergrund." }],
+            },
+            {
+              name: "jobs",
+              cat: "Jobs",
+              desc: "Zeigt alle aktiven Hintergrund-Jobs im aktuellen Terminal an.",
+              syn: "jobs",
+              ex: [{ c: "jobs", d: "Aktive Jobs auflisten" }],
+            },
+            {
+              name: "nano",
+
+              cat: "Editor",
+
+              desc: "Mit diesem Befehl, ist es möglich direkt, auf den den Inhalt einer Datei zuzugreifen und zu bearbeiten. Mit nano können auch Dateien erstellt werden",
+
+              syn: "nano [DATEI]",
+
+              ex: [
+                {
+                  c: "nano supercoole.txt",
+                  d: "Die Datei supercoole.txt bearbeiten.",
+                },
+              ],
+            },
+            {
+              name: "vim",
+
+              cat: "Editor",
+
+              desc: "Der Befehl vim ist ein mächtiger Texteditor im Terminal, der mit verschiedenen Modi arbeitet. Um zb den Textxeditor Modus zu verwenden muss man i drücken.",
+
+              syn: "vim [DATEI]",
+
+              ex: [{ c: "vim script.sh", d: "Datei in vim öffnen" }],
+            },
+            {
+              name: "mount",
+              cat: "Festplatten",
+              desc: "In Linux werden Festplatten nicht autonatisch als zb laufwerk C angezeigt. Deshalb dient dieser Befehl dazu eine Festplatte in das Dateisystem einzuhängen.",
+              syn: "mount [OPTIONEN] GERÄT MOUNTPOINT",
+              ex: [
+                { c: "sudo mount /dev/sdb1 /mnt", d: "Partition einhängen" },
+                { c: "mount", d: "Alle eingehängten Dateisysteme" },
+              ],
+            },
+            {
+              name: "umount",
+              cat: "Festplatten",
+              desc: "Unmount das genaue gegenteil von mount. Es Trennt eine Festplatte vom Dateisystem.",
+              syn: "umount MOUNTPOINT",
+              ex: [{ c: "sudo umount /mnt", d: "Partition aushängen" }],
+            },
+            {
+              name: "fdisk",
+              cat: "Festplatten",
+              desc: "Fdisk ist ein Befehl um die Partitionen einer Festplatte zu verwalten.",
+              syn: "fdisk [OPTIONEN] GERÄT",
+              ex: [
+                { c: "sudo fdisk -l", d: "Alle Partitionen auflisten" },
+                { c: "sudo fdisk /dev/sdb", d: "Interaktiv partitionieren" },
+              ],
+            },
+            {
+              name: "lsblk",
+              cat: "Festplatten",
+              desc: "Listet alle Blockgeräte auf, wie zb: USB SSD usw.",
+              syn: "lsblk [OPTIONEN]",
+              ex: [
+                { c: "lsblk", d: "Alle Blcokgeräte anzeigen" },
+                { c: "lsblk -f", d: "Mit Dateisystem-Infos" },
+              ],
+            },
+          ];
+
+          const cats = [...new Set(cmds.map((c) => c.cat))].sort();
+
+          const byCat = computed(() => {
+            const m = {};
+            for (const c of cats) m[c] = cmds.filter((x) => x.cat === c);
+            return m;
+          });
+
+          const shown = computed(() => {
+            return cmds.filter((cmd) => {
+              const matchCat = filt.value === "Alle" || cmd.cat === filt.value;
+              const sq = q.value.toLowerCase().trim();
+              const matchQ = !sq || cmd.name.toLowerCase().startsWith(sq);
+              return matchCat && matchQ;
+            });
+          });
+
+          const sideGroups = [
+            {
+              l: "Kapitel",
+              items: [
+                { id: "s1", l: "Titelseite", tab: "title" },
+                { id: "s2", l: "IPERKA Methode", tab: "iperka" },
+                { id: "s3", l: "Was ist Linux?", tab: "linux" },
+                { id: "s4", l: "Commands", tab: "commands", n: cmds.length },
+              ],
+            },
+            {
+              l: "Kategorien",
+              items: cats.map((c) => ({
+                id: "c_" + c,
+                l: c,
+                tab: "commands",
+                f: c,
+                n: cmds.filter((x) => x.cat === c).length,
+              })),
+            },
+          ];
+
+          function go(item) {
+            tab.value = item.tab;
+            if (item.f) filt.value = item.f;
+            else if (item.tab === "commands") filt.value = "Alle";
+          }
+
+          const activeCat = ref("");
+
+          onMounted(() => {
+            // Hero canvas ripple
+            const canvas = document.getElementById("hcanvas");
+            if (!canvas) return;
+            const ctx = canvas.getContext("2d");
+            let W, H;
+            const mouse = { x: -999, y: -999 };
+            const SP = 44;
+            function resize() {
+              W = canvas.width = canvas.offsetWidth;
+              H = canvas.height = canvas.offsetHeight;
+            }
+            resize();
+            window.addEventListener("resize", resize);
+            const hero = canvas.parentElement;
+            hero.addEventListener("mousemove", (e) => {
+              const r = canvas.getBoundingClientRect();
+              mouse.x = e.clientX - r.left;
+              mouse.y = e.clientY - r.top;
+            });
+            hero.addEventListener("mouseleave", () => {
+              mouse.x = -999;
+              mouse.y = -999;
+            });
+            function draw() {
+              ctx.clearRect(0, 0, W, H);
+              const cols = Math.ceil(W / SP) + 2;
+              const rows = Math.ceil(H / SP) + 2;
+              const ox = (W % SP) / 2;
+              const oy = (H % SP) / 2;
+              for (let r = 0; r < rows; r++) {
+                for (let c = 0; c < cols; c++) {
+                  const bx = ox + c * SP - SP;
+                  const by = oy + r * SP - SP;
+                  const dx = bx - mouse.x;
+                  const dy = by - mouse.y;
+                  const dist = Math.sqrt(dx * dx + dy * dy);
+                  const str = Math.max(0, 1 - dist / 160);
+                  const push = str * 20;
+                  const ang = Math.atan2(dy, dx);
+                  const x = bx + Math.cos(ang) * push;
+                  const y = by + Math.sin(ang) * push;
+                  ctx.beginPath();
+                  ctx.arc(x, y, 0.8 + str * 2.8, 0, Math.PI * 2);
+                  ctx.fillStyle = "rgba(129,140,248," + (0.1 + str * 0.4) + ")";
+                  ctx.fill();
+                }
+              }
+              requestAnimationFrame(draw);
+            }
+            draw();
+
+            // Scroll tracker for command categories
+            function onScroll() {
+              if (tab.value !== "commands") return;
+              const headers = document.querySelectorAll(".grp-hd");
+              if (!headers.length) return;
+              let current = "";
+              headers.forEach((el) => {
+                const rect = el.getBoundingClientRect();
+                if (rect.top <= 120) current = el.dataset.cat;
+              });
+              if (current) activeCat.value = current;
+            }
+            window.addEventListener("scroll", onScroll, { passive: true });
+          });
+
+          return {
+            tab,
+            tabs,
+            q,
+            filt,
+            iperOpen,
+            subOpen,
+            iperProg,
+            iperka,
+            toggleIper,
+            toggleSub,
+            distros,
+            fs,
+            instSteps,
+            cmds,
+            cats,
+            byCat,
+            shown,
+            sideGroups,
+            go,
+            activeCat,
+          };
+        },
+      }).mount("#app");
+    </script>
+  </body>
+</html>
